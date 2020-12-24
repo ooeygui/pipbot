@@ -1,0 +1,4 @@
+<launch>
+  <node pkg="pipbot" type="pipbot_node" name="pipbot" output="screen">
+  </node>
+</launch>
