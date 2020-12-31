@@ -11,13 +11,14 @@ if(MSVC)
   add_definitions(-D_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS)
   endif()
 
+set(FETCHCONTENT_QUIET OFF)
+
 include(FetchContent)
 FetchContent_Declare(
   imgui
   GIT_REPOSITORY https://github.com/ocornut/imgui
   GIT_TAG        v1.79
 )
-set(FETCHCONTENT_QUIET OFF)
 FetchContent_MakeAvailable(imgui)
 
 FetchContent_Declare(
@@ -25,13 +26,20 @@ FetchContent_Declare(
   GIT_REPOSITORY https://github.com/glfw/glfw
   GIT_TAG        3.3.2
 )
-set(FETCHCONTENT_QUIET OFF)
 FetchContent_MakeAvailable(glfw)
+
+FetchContent_Declare(
+    SDL2
+    GIT_REPOSITORY https://github.com/spurious/SDL-mirror
+)
+FetchContent_MakeAvailable(SDL2)
+
 
 find_package(catkin REQUIRED COMPONENTS
   roscpp
   roslib
   std_msgs
+  cv_bridge
 )
 
 find_package(OpenGL REQUIRED)
@@ -51,6 +59,7 @@ catkin_package(
 
 include_directories(
   include
+  ${catkin_INCLUDE_DIRS}
   ${OPENGL_INCLUDE_DIRS}
   ${glfw_INCLUDE_DIRS}
   ${imgui_SOURCE_DIR}
@@ -65,7 +74,7 @@ add_executable(${PROJECT_NAME}_node
   ${imgui_SOURCE_DIR}/imgui_demo.cpp
   ${imgui_SOURCE_DIR}/imgui_draw.cpp
   ${imgui_SOURCE_DIR}/imgui_widgets.cpp
-  ${imgui_SOURCE_DIR}/examples/imgui_impl_glfw.cpp
+  ${imgui_SOURCE_DIR}/examples/imgui_impl_sdl.cpp
   ${imgui_SOURCE_DIR}/examples/imgui_impl_opengl3.cpp
   ${imgui_SOURCE_DIR}/examples/libs/gl3w/GL/gl3w.c  
 )
@@ -81,6 +90,8 @@ target_link_libraries(${PROJECT_NAME}_node
   OpenGL::GL
   ${OPENGL_LIBRARIES}
   ${CMAKE_DL_LIBS}
+  SDL2 
+  SDL2main
 )
 
 install(TARGETS ${PROJECT_NAME}_node
